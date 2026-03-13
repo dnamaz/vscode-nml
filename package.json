@@ -7,7 +7,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/dnamaz/nml"
+    "url": "https://github.com/dnamaz/vscode-nml"
   },
   "icon": "nml-icon.png",
   "engines": {
