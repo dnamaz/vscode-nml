@@ -1,0 +1,89 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "NML",
+  "scopeName": "source.nml",
+  "fileTypes": ["nml"],
+  "patterns": [
+    { "include": "#comment" },
+    { "include": "#meta-line" },
+    { "include": "#data-line" },
+    { "include": "#instruction" }
+  ],
+  "repository": {
+    "comment": {
+      "match": ";.*$",
+      "name": "comment.line.semicolon.nml"
+    },
+    "meta-line": {
+      "match": "^\\s*(META|§|METADATA)\\s+(@[a-z_][a-z0-9_]*)\\s+(\"[^\"]*\")",
+      "captures": {
+        "1": { "name": "keyword.control.meta.nml" },
+        "2": { "name": "entity.name.tag.nml" },
+        "3": { "name": "string.quoted.double.nml" }
+      }
+    },
+    "data-line": {
+      "match": "^\\s*(@[a-z_][a-z0-9_]*)\\s+(shape=[0-9,x]+)\\s*(?:(dtype=[a-z0-9]+)\\s+)?(data=-?[0-9][0-9.e,\\-]*)",
+      "captures": {
+        "1": { "name": "entity.name.tag.nml" },
+        "2": { "name": "support.type.shape.nml" },
+        "3": { "name": "support.type.dtype.nml" },
+        "4": { "name": "constant.numeric.data.nml" }
+      }
+    },
+    "instruction": {
+      "patterns": [
+        { "include": "#opcode-symbolic" },
+        { "include": "#opcode-classic" },
+        { "include": "#opcode-verbose" },
+        { "include": "#shape-literal" },
+        { "include": "#immediate" },
+        { "include": "#memory-ref" },
+        { "include": "#register-greek" },
+        { "include": "#register-verbose" },
+        { "include": "#register-classic" },
+        { "include": "#frag-name" }
+      ]
+    },
+    "opcode-symbolic": {
+      "match": "(?<=^|\\s)(×|⊕|⊖|⊗|⊘|·|∗|÷|⌐|σ|τ|Σ|ℊ|↓|↑|←|□|∎|∑|⨁|⊞|⊤|⊢|⊣|⋈|≶|≺|ϟ|↗|↘|→|↻|↺|⏸|◼|⇒|⇐|◎|◉|⚠|⊛|⊓|⊔|⊡|⊙|‖|⊏|⊥|ϛ|⊻|⊧|⊜|∿|⋐|§|◆|◇|⊿|✦|✓|⚖|⟐|⟂|⊃|⊂|⚙|%|⊶|⊷|¬|∇|⟳|△|⥁)(?=\\s|$)",
+      "name": "keyword.operator.opcode.symbolic.nml"
+    },
+    "opcode-classic": {
+      "match": "(?i)\\b(MMUL|MADD|MSUB|EMUL|EDIV|SDOT|DOT|SCLR|SDIV|RELU|SIGM|TANH|SOFT|GELU|LD|ST|MOV|ALLC|RSHP|TRNS|SPLT|MERG|CMPF|CMP|CMPI|JMPT|JMPF|JUMP|JMP|LOOP|ENDP|LEAF|TACC|CALL|RET|SYNC|HALT|TRAP|CONV|POOL|UPSC|PADZ|ATTN|NORM|EMBD|RDUC|WHER|CLMP|CMPR|FFT|FILT|META|FRAG|ENDF|LINK|PTCH|SIGN|VRFY|VOTE|PROJ|DIST|GATH|SCAT|SCTR|SYS|MOD|ITOF|FTOI|BNOT|BKWD|WUPD|LOSS|TNET)\\b",
+      "name": "keyword.other.opcode.classic.nml"
+    },
+    "opcode-verbose": {
+      "match": "(?i)\\b(MATRIX_MULTIPLY|ADD|SUBTRACT|ELEMENT_MULTIPLY|ELEMENT_DIVIDE|DOT_PRODUCT|SCALE|DIVIDE|SCALAR_DIVIDE|RECTIFY|SIGMOID|HYPERBOLIC_TANGENT|SOFTMAX|LOAD|STORE|COPY|ALLOCATE|SET_VALUE|SET_LEAF|RESHAPE|TRANSPOSE|SPLIT|MERGE|COMPARE_FEATURE|COMPARE|COMPARE_IMMEDIATE|COMPARE_VALUE|BRANCH_TRUE|BRANCH_FALSE|BRANCH|BEGIN_LOOP|END_LOOP|REPEAT|END_REPEAT|ACCUMULATE|TREE_ACCUMULATE|CALL_SUB|RETURN_SUB|RETURN|BARRIER|STOP|FAULT|CONVOLVE|MAX_POOL|UPSCALE|ZERO_PAD|ATTENTION|LAYER_NORM|EMBED|REDUCE|WHERE|CLAMP|MASK_COMPARE|FOURIER|FILTER|METADATA|FRAGMENT|END_FRAGMENT|IMPORT|PATCH|SIGN_PROGRAM|VERIFY_SIGNATURE|CONSENSUS|PROJECT|DISTANCE|GATHER|SCATTER|SYSTEM|MODULO|INT_TO_FLOAT|FLOAT_TO_INT|BITWISE_NOT|BACKWARD|WEIGHT_UPDATE|COMPUTE_LOSS|TRAIN_NETWORK)\\b",
+      "name": "keyword.other.opcode.verbose.nml"
+    },
+    "register-classic": {
+      "match": "(?i)\\b(R[0-9]|R[A-V])\\b",
+      "name": "variable.language.register.nml"
+    },
+    "register-greek": {
+      "match": "(ι|κ|λ|μ|ν|ξ|ο|π|ρ|ς|α|β|γ|δ|φ|ψ|η|θ|ζ|ω|χ|υ|ε)",
+      "name": "variable.other.register.greek.nml"
+    },
+    "register-verbose": {
+      "match": "(?i)\\b(ACCUMULATOR|GENERAL|SCRATCH|COUNTER|FLAG|STACK|INPUT|KERNEL|LAYER|MOMENTUM|GRAD1|GRAD2|GRAD3|LRATE)\\b",
+      "name": "variable.other.register.verbose.nml"
+    },
+    "shape-literal": {
+      "match": "#?\\[[0-9]+(,[0-9]+)*\\]",
+      "name": "constant.other.shape.nml"
+    },
+    "immediate": {
+      "match": "#-?[0-9]+(\\.[0-9]+)?",
+      "name": "constant.numeric.immediate.nml"
+    },
+    "memory-ref": {
+      "match": "@[a-z_][a-z0-9_]*",
+      "name": "entity.name.tag.memory.nml"
+    },
+    "frag-name": {
+      "match": "(?<=(?:FRAG|◆|FRAGMENT)\\s)[a-z_][a-z0-9_]*",
+      "name": "entity.name.function.fragment.nml"
+    }
+  }
+}
